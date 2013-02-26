@@ -50,6 +50,7 @@ class Item_model extends CI_Model {
 	function GetArray($Param = array()) {
 		$Array = array();
 		
+		$ForceDisplayID = (isset($Param['ForceDisplayID'])) ? $Param['ForceDisplayID'] : 0;
 		$StringSearch = (isset($Param['NameLike'])) ? "AND movie_title LIKE '%" . $Param['NameLike'] . "%'"  : '';
 		$StringFilter = GetStringFilter($Param);
 		
@@ -66,9 +67,20 @@ class Item_model extends CI_Model {
 		";
 		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
 		while (false !== $Row = mysql_fetch_assoc($SelectResult)) {
+			if (!empty($ForceDisplayID)) {
+                $ForceDisplayID = ($ForceDisplayID == $Row['item_id']) ? 0 : $ForceDisplayID;
+            }
+			
 			$Row = StripArray($Row);
 			$Array[] = $Row;
 		}
+		
+        if (!empty($ForceDisplayID)) {
+            $ArrayForce = $this->GetByID(array('item_id' => $ForceDisplayID));
+			if (count($ArrayForce) > 0) {
+				$Array[] = $ArrayForce;
+			}
+        }
 		
 		return $Array;
 	}
@@ -90,6 +102,19 @@ class Item_model extends CI_Model {
 		}
 		
 		return $TotalRecord;
+	}
+	
+	function get_next_item($item_id) {
+		$next_item_id = 0;
+		
+		$SelectQuery  = "SELECT Item.* FROM ".ITEM." Item WHERE Item.item_id > '".$item_id."' ORDER BY Item.item_id ASC LIMIT 1";
+		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
+		if (false !== $Row = mysql_fetch_assoc($SelectResult)) {
+			$Item = StripArray($Row);
+			$next_item_id = $Item['item_id'];
+		}
+		
+		return $next_item_id;
 	}
 	
 	function Delete($Param) {

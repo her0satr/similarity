@@ -17,13 +17,20 @@ Ext.onReady(function() {
 			url: Web.HOST + '/index.php/similarity/process/trigger',
 			params: { item_primary: item_primary },
 			success: function(TempResult) {
-				eval('var Result = ' + TempResult.responseText)
-				
-				
+				eval('var Result = ' + TempResult.responseText);
 				store.load();
+				
 				if (IsGenerate == 1 && Result.Loop == 1) {
 					setTimeout(function() {
 						GenerateSimilarity(item_primary, store);
+					}, 1000);
+				} else if (IsGenerate == 1 && Result.next_item_id > 0) {
+					Func.SetValue({ Action: 'Item', Combo: Ext.getCmp('itemTB'), ForceID: Result.next_item_id });
+					ResultStore.proxy.extraParams.item_primary = Result.next_item_id;
+					ResultStore.load();
+					
+					setTimeout(function() {
+						GenerateSimilarity(Result.next_item_id, ResultStore);
 					}, 1000);
 				} else {
 					Renderer.FlashMessage(Result.Message);

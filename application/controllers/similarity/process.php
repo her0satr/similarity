@@ -26,7 +26,14 @@ class process extends CI_Controller {
 			$item_secondary = $this->Result_model->GetNextSecondary($item_primary);
 			if (empty($item_secondary)) {
 				$Result['Loop'] = 0;
+				$Result['next_item_id'] = 0;
 				$Result['Message'] = 'Similarity process done.';
+				
+				// Generate Next Item
+				$next_item_id = $this->Item_model->get_next_item($item_primary);
+				if (!empty($next_item_id)) {
+					$Result['next_item_id'] = $next_item_id;
+				}
 				break;
 			}
 			

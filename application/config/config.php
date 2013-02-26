@@ -18,8 +18,8 @@
 $PortAddress = ($_SERVER['SERVER_PORT'] != 80) ? ':8666' : '';
 
 if ($_SERVER['SERVER_NAME'] == 'localhost') {
-	$config['base_url']		= 'http://localhost'.$PortAddress.'/similarity';
-	$config['base_path']	= ($_SERVER['SERVER_PORT'] == 80) ? 'C:/Program Files/xampplite/htdocs/similarity' : 'C:/Program Files/xampplite/htdocs/similarity';
+	$config['base_url']		= 'http://localhost'.$PortAddress.'/similarity/trunk';
+	$config['base_path'] 	= realpath(dirname(__FILE__) . '/../..');
 } else {
 	echo 'Please set up config.';
 	exit;
