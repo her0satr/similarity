@@ -58,4 +58,31 @@ if (! class_exists('Similarity')) {
 		}
 	}
 }
+
+if (! class_exists('Prediction')) {
+	class Prediction {
+		function __construct($Param) {
+			$this->Result = 0;
+			$this->item_data = $Param['item_data'];
+			$this->item_average = $Param['item_average'];
+			
+			$this->Proccess($Param);
+		}
+		
+		function Proccess($Param) {
+			$ScoreUpper = 0;
+			$ScoreLower = 0;
+			foreach ($Param['item_data'] as $Array) {
+				$ScoreUpper += ($Array['user_score'] - $Array['average_score']) * $Array['similarity'];
+				$ScoreLower += $Array['similarity'];
+			}
+			
+			if (empty($ScoreLower)) {
+				$this->Result = $Param['item_average'];
+			} else {
+				$this->Result = $Param['item_average'] + ($ScoreUpper / $ScoreLower);
+			}
+		}
+	}
+}
 ?>

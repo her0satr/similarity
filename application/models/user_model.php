@@ -4,7 +4,7 @@ class User_model extends CI_Model {
 	function __construct() {
         parent::__construct();
 		
-		$this->Field = array('user_id', 'user_name', 'user_password', 'user_fullname', 'user_email', 'user_last_login');
+		$this->Field = array('user_id', 'username', 'password', 'age', 'gender', 'occupation', 'zipcode');
     }
 	
 	function Update($Param) {
@@ -71,12 +71,14 @@ class User_model extends CI_Model {
 	
 	function GetArray($Param = array()) {
 		$Array = array();
-		$StringSearch = (isset($Param['NameLike'])) ? "AND user_fullname LIKE '%" . $Param['NameLike'] . "%'"  : '';
+		
+		$ForceDisplayID = (isset($Param['ForceDisplayID'])) ? $Param['ForceDisplayID'] : 0;
+		$StringSearch = (isset($Param['NameLike'])) ? "AND user_id LIKE '%" . $Param['NameLike'] . "%'"  : '';
 		$StringFilter = GetStringFilter($Param);
 		
 		$PageOffset = (isset($Param['start']) && !empty($Param['start'])) ? $Param['start'] : 0;
 		$PageLimit = (isset($Param['limit']) && !empty($Param['limit'])) ? $Param['limit'] : 25;
-		$StringSorting = (isset($Param['sort'])) ? GetStringSorting($Param['sort']) : 'occupation ASC';
+		$StringSorting = (isset($Param['sort'])) ? GetStringSorting($Param['sort']) : 'user_id ASC';
 		
 		$SelectQuery = "
 			SELECT User.*
@@ -88,10 +90,20 @@ class User_model extends CI_Model {
 		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
 		while (false !== $Row = mysql_fetch_assoc($SelectResult)) {
             unset($Row['password']);
-            
+			if (!empty($ForceDisplayID)) {
+                $ForceDisplayID = ($ForceDisplayID == $Row['user_id']) ? 0 : $ForceDisplayID;
+            }
+			
 			$Row = StripArray($Row, array('user_last_login'));
 			$Array[] = $Row;
 		}
+		
+        if (!empty($ForceDisplayID)) {
+            $ArrayForce = $this->GetByID(array('user_id' => $ForceDisplayID));
+			if (count($ArrayForce) > 0) {
+				$Array[] = $ArrayForce;
+			}
+        }
 		
 		return $Array;
 	}
@@ -99,7 +111,7 @@ class User_model extends CI_Model {
 	function GetCount($Param = array()) {
 		$TotalRecord = 0;
 		
-		$StringSearch = (isset($Param['NameLike'])) ? "AND user_fullname LIKE '%" . $Param['NameLike'] . "%'"  : '';
+		$StringSearch = (isset($Param['NameLike'])) ? "AND user_id LIKE '%" . $Param['NameLike'] . "%'"  : '';
 		$StringFilter = GetStringFilter($Param);
 		
 		$SelectQuery = "
@@ -113,6 +125,22 @@ class User_model extends CI_Model {
 		}
 		
 		return $TotalRecord;
+	}
+	
+	function get_next_user($user_id) {
+		$next_user_id = 0;
+		$SelectQuery  = "
+			SELECT User.*
+			FROM ".USER." User
+			WHERE user_id > '$user_id'
+			ORDER BY user_id ASC
+			LIMIT 1";
+		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
+		if (false !== $Row = mysql_fetch_assoc($SelectResult)) {
+			$next_user_id = $Row['user_id'];
+		}
+		
+		return $next_user_id;
 	}
 	
 	function Delete($Param) {

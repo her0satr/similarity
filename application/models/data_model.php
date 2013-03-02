@@ -50,24 +50,32 @@ class Data_model extends CI_Model {
 	function GetArray($Param = array()) {
 		$Array = array();
 		
-		$StringSearch = (isset($Param['NameLike'])) ? "AND item_name LIKE '%" . $Param['NameLike'] . "%'"  : '';
+		$Param['ArrayKey'] = (isset($Param['ArrayKey'])) ? $Param['ArrayKey'] : '';
+		
+		$StringSearch = (isset($Param['NameLike'])) ? "AND user_id LIKE '%" . $Param['NameLike'] . "%'"  : '';
+		$StringUser = (isset($Param['user_id'])) ? "AND user_id = '" . $Param['user_id'] . "'"  : '';
 		$StringFilter = GetStringFilter($Param);
 		
 		$PageOffset = (isset($Param['start']) && !empty($Param['start'])) ? $Param['start'] : 0;
 		$PageLimit = (isset($Param['limit']) && !empty($Param['limit'])) ? $Param['limit'] : 25;
-		$StringSorting = (isset($Param['sort'])) ? GetStringSorting($Param['sort']) : 'item_name ASC';
+		$StringSorting = (isset($Param['sort'])) ? GetStringSorting($Param['sort']) : 'item_id ASC';
 		
 		$SelectQuery = "
 			SELECT Data.*
 			FROM ".DATA." Data
-			WHERE 1 $StringSearch $StringFilter
+			WHERE 1 $StringSearch $StringUser $StringFilter
 			ORDER BY $StringSorting
 			LIMIT $PageOffset, $PageLimit
 		";
 		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
 		while (false !== $Row = mysql_fetch_assoc($SelectResult)) {
 			$Row = StripArray($Row);
-			$Array[] = $Row;
+			
+			if ($Param['ArrayKey'] == 'item_id') {
+				$Array[$Row['item_id']] = $Row['rating'];
+			} else {
+				$Array[] = $Row;
+			}
 		}
 		
 		return $Array;
@@ -76,7 +84,7 @@ class Data_model extends CI_Model {
 	function GetCount($Param = array()) {
 		$TotalRecord = 0;
 		
-		$StringSearch = (isset($Param['NameLike'])) ? "AND item_name LIKE '%" . $Param['NameLike'] . "%'"  : '';
+		$StringSearch = (isset($Param['NameLike'])) ? "AND user_id LIKE '%" . $Param['NameLike'] . "%'"  : '';
 		$StringFilter = GetStringFilter($Param);
 		
 		$SelectQuery = "
@@ -107,6 +115,24 @@ class Data_model extends CI_Model {
 		}
 		
 		return $ArrayResult;
+	}
+	
+	function GetAverage() {
+		$Array = array();
+		
+		$SelectQuery = "
+			SELECT item_id, AVG(rating) average
+			FROM ".DATA."
+			GROUP BY item_id
+		";
+		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
+		while (false !== $Row = mysql_fetch_assoc($SelectResult)) {
+			$Row = StripArray($Row);
+			$Array[$Row['item_id']] = $Row['average'];
+		}
+		
+		return $Array;
+
 	}
 	
 	function Delete($Param) {

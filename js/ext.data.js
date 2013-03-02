@@ -186,7 +186,22 @@ var Template = {
 		'</li>' +
 		'<tpl for="."><li class="x-boundlist-item">' +
 			'<div style="float: left; width: 275px;">{movie_title}</div>' +
-			'<div style="float: left; width: 125px;">{release_date}</div>' +
+			'<div style="float: left; width: 150px;">{release_date}</div>' +
+			'<div class="clear"></div>' +
+		'</li></tpl></ul>'
+	),
+	User: new Ext.XTemplate(
+		'<ul>' +
+		'<li style="padding: 2px; font-weight: bold;">' +
+			'<div style="float: left; width: 75px;">User ID</div>' +
+			'<div style="float: left; width: 200px;">Occupation</div>' +
+			'<div style="float: left; width: 150px;">Zipcode</div>' +
+			'<div class="clear"></div>' +
+		'</li>' +
+		'<tpl for="."><li class="x-boundlist-item">' +
+			'<div style="float: left; width: 75px;">{user_id}</div>' +
+			'<div style="float: left; width: 200px;">{occupation}</div>' +
+			'<div style="float: left; width: 150px;">{zipcode}</div>' +
 			'<div class="clear"></div>' +
 		'</li></tpl></ul>'
 	)
@@ -198,6 +213,19 @@ var Store = {
 			fields: ['item_id', 'movie_title', 'release_date'],
 			autoLoad: false, proxy: {
 				type: 'ajax', extraParams: { Action: 'Item' },
+				url: Web.HOST + '/index.php/combo',
+				reader: { type: 'json', root: 'res' },
+				actionMethods: { read: 'POST' }
+			}
+		});
+		
+		return Store;
+	},
+	User: function() {
+		var Store = new Ext.create('Ext.data.Store', {
+			fields: ['user_id', 'occupation', 'zipcode'],
+			autoLoad: false, proxy: {
+				type: 'ajax', extraParams: { Action: 'User' },
 				url: Web.HOST + '/index.php/combo',
 				reader: { type: 'json', root: 'res' },
 				actionMethods: { read: 'POST' }
@@ -220,6 +248,17 @@ var Combo = {
 			}
 			p = Func.SyncComboParam(p, Param);
 			return p;
+		},
+		User: function(Param) {
+			var p = {
+				xtype: 'combo', store: Store.User(), minChars: 1, selectOnFocus: false,
+				triggerAction: 'all', lazyRender: true, typeAhead: true,
+				valueField: 'user_id', displayField: 'occupation',
+				listConfig: { minWidth: 480 }, tpl: Template.User,
+				readonly: false, editable: true
+			}
+			p = Func.SyncComboParam(p, Param);
+			return p;
 		}
 	}
 }
@@ -227,6 +266,10 @@ var Combo = {
 Combo.Class = {
 	Item: function(Param) {
 		var c = new Ext.form.ComboBox(Combo.Param.Item(Param));
+		return c;
+	},
+	User: function(Param) {
+		var c = new Ext.form.ComboBox(Combo.Param.User(Param));
 		return c;
 	}
 }

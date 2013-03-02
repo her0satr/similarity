@@ -17,7 +17,7 @@ if (! function_exists('EscapeString')) {
 	function EscapeString($Array) {
 		$ArrayResult = array();
 		foreach($Array as $Key => $Element) {
-			$ArrayResult[$Key] = mysql_escape_string($Element);
+			$ArrayResult[$Key] = mysql_real_escape_string($Element);
 		}
 		return $ArrayResult;
 	}

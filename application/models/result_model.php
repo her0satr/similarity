@@ -56,6 +56,8 @@ class Result_model extends CI_Model {
 	function GetArray($Param = array()) {
 		$Array = array();
 		
+		$Param['ArrayKey'] = (isset($Param['ArrayKey'])) ? $Param['ArrayKey'] : '';
+		
 		$StringPrimary = (isset($Param['item_primary'])) ? "AND ItemPrimary.item_id = '" . $Param['item_primary'] . "'"  : '';
 		$StringSearch = (isset($Param['NameLike'])) ? "AND ItemSecondary.movie_title LIKE '%" . $Param['NameLike'] . "%'"  : '';
 		$StringFilter = GetStringFilter($Param);
@@ -76,7 +78,12 @@ class Result_model extends CI_Model {
 		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
 		while (false !== $Row = mysql_fetch_assoc($SelectResult)) {
 			$Row = $this->Sync($Row);
-			$Array[] = $Row;
+			
+			if ($Param['ArrayKey'] == 'item_secondary') {
+				$Array[$Row['item_secondary']] = $Row['similarity'];
+			} else {
+				$Array[] = $Row;
+			}
 		}
 		
 		return $Array;

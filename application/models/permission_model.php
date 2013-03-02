@@ -10,7 +10,8 @@ class Permission_model extends CI_Model {
 		
 		$ArrayPermission[] = array( 'Group' => 'Similarity', 'Link' => '/index.php/similarity/item', 'Title' => 'Item' );
 		$ArrayPermission[] = array( 'Group' => 'Similarity', 'Link' => '/index.php/similarity/user', 'Title' => 'User' );
-		$ArrayPermission[] = array( 'Group' => 'Similarity', 'Link' => '/index.php/similarity/process', 'Title' => 'Process' );
+		$ArrayPermission[] = array( 'Group' => 'Similarity', 'Link' => '/index.php/similarity/process', 'Title' => 'Similarity Process' );
+		$ArrayPermission[] = array( 'Group' => 'Similarity', 'Link' => '/index.php/similarity/rating_process', 'Title' => 'Rating Process' );
 		
 		$ArrayPermission[] = array( 'Group' => 'Site', 'Link' => '/index.php/site/config', 'Title' => 'Site Config' );
 		

@@ -111,7 +111,7 @@ $autoload['language'] = array();
 
 $autoload['model'] = array(
 	'Config_model', 'Group_model', 'User_model', 'User_Group_model', 'Permission_model', 'Item_model', 'Data_model', 'Result_model',
-	'Cluster_model'
+	'Cluster_model', 'Prediction_model'
 );
 
 

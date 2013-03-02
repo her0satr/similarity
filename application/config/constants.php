@@ -43,6 +43,7 @@ define('CLUSTER',								'clustering');
 define('CONFIG',								'config');
 define('DATA',									'data');
 define('ITEM',									'item');
+define('PREDICTION',							'prediction');
 define('RESULT',								'result');
 define('USER',									'user');
 

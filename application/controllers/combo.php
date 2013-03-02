@@ -20,6 +20,8 @@ class combo extends CI_Controller {
 		
 		if ($Action == 'Item') {
 			$Result = $this->Item_model->GetArray(array('ForceDisplayID' => $ForceDisplayID, 'NameLike' => $NameLike));
+		} else if ($Action == 'User') {
+			$Result = $this->User_model->GetArray(array('ForceDisplayID' => $ForceDisplayID, 'NameLike' => $NameLike));
 		}
 		
 		echo json_encode($Result);

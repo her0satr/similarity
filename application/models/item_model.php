@@ -117,6 +117,29 @@ class Item_model extends CI_Model {
 		return $next_item_id;
 	}
 	
+	function get_item_without_rate($user_id) {
+		$Array = array();
+		$SelectQuery  = "
+			SELECT
+				Item.item_id, Item.movie_title,
+				(SELECT rating FROM ".DATA." Data WHERE Data.item_id = Item.item_id AND user_id = '$user_id') rating
+			FROM ".ITEM." Item
+			ORDER BY rating ASC
+			LIMIT 10
+		";
+		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
+		while (false !== $Row = mysql_fetch_assoc($SelectResult)) {
+			if (!empty($Row['rating'])) {
+				break;
+			}
+			
+			$Array[] = $Row;
+		}
+		
+		return $Array;
+
+	}
+	
 	function Delete($Param) {
 		$DeleteQuery  = "DELETE FROM ".ITEM." WHERE item_id = '".$Param['item_id']."' LIMIT 1";
 		$DeleteResult = mysql_query($DeleteQuery) or die(mysql_error());
