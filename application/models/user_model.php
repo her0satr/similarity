@@ -36,7 +36,6 @@ class User_model extends CI_Model {
             $SelectQuery  = "
 				SELECT User.*, UserGroup.*
 				FROM ".USER." User
-				LEFT JOIN ".USER_GROUP." UserGroup ON UserGroup.user_id = User.user_id
 				WHERE user_name = '".$Param['user_name']."'
 				LIMIT 1";
 		} else if (isset($Param['user_email'])) {
@@ -45,9 +44,8 @@ class User_model extends CI_Model {
             $SelectQuery  = "SELECT * FROM ".USER." WHERE reset_token = '".$Param['reset_token']."' LIMIT 1";
 		} else if (isset($Param['user_id'])) {
 			$SelectQuery  = "
-				SELECT User.*, UserGroup.*
+				SELECT User.*
 				FROM ".USER." User
-				LEFT JOIN ".USER_GROUP." UserGroup ON UserGroup.user_id = User.user_id
 				WHERE User.user_id = '".$Param['user_id']."'
 				LIMIT 1";
         }
