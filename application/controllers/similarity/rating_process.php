@@ -30,9 +30,10 @@ class rating_process extends CI_Controller {
 			$ArrayUserRate = $this->Data_model->GetArray(array('user_id' => $user_id, 'limit' => 2000, 'ArrayKey' => 'item_id'));
 			
 			foreach ($ArrayItem as $Item) {
+				// Collect Prediction Parameter
 				$Array = array(
 					'item_data' => array(),
-					'item_average' => $ArrayAverage[$Item['item_id']]
+					'item_average' => (isset($ArrayAverage[$Item['item_id']])) ? $ArrayAverage[$Item['item_id']] : 0
 				);
 				$ArraySimilarity = $this->Result_model->GetArray(array('item_primary' => $Item['item_id'], 'limit' => 2000, 'ArrayKey' => 'item_secondary'));
 				foreach ($ArrayUserRate as $Key => $Value) {
@@ -44,8 +45,10 @@ class rating_process extends CI_Controller {
 					$Array['item_data'][] = $ArrayTemp;
 				}
 				
+				// Do Prediction
 				$Prediction = new Prediction($Array);
 				
+				// Update Prediction Result
 				$UpdateParam = array(
 					'prediction_id' => 0,
 					'user_id' => $user_id,
