@@ -125,7 +125,7 @@ class Item_model extends CI_Model {
 				(SELECT rating FROM ".DATA." Data WHERE Data.item_id = Item.item_id AND user_id = '$user_id') rating
 			FROM ".ITEM." Item
 			ORDER BY rating ASC
-			LIMIT 10
+			LIMIT 2000
 		";
 		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
 		while (false !== $Row = mysql_fetch_assoc($SelectResult)) {
