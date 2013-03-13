@@ -39,7 +39,7 @@ if (! function_exists('ArrayToJSON')) {
 	function ArrayToJSON($Array) {
 		$Result = '';
 		foreach ($Array as $Key => $Element) {
-			$Element = mysql_escape_string($Element);
+			$Element = mysql_real_escape_string($Element);
 			$Result .= (empty($Result)) ? "'$Key': '$Element'" : ",'$Key':'$Element'";
 		}
 		$Result = '{' . $Result . '}';
@@ -249,7 +249,7 @@ if (! function_exists('GenerateInsertQuery')) {
 			$StringField .= (empty($StringField)) ? $Column : ', ' . $Column;
 			
 			$Value = (isset($ArrayParam[$Column])) ? $ArrayParam[$Column] : '';
-			$Value = mysql_escape_string($Value);
+			$Value = mysql_real_escape_string($Value);
             
             if ($Param['AllowSymbol'] == 0) {
                 $Value = preg_replace('/[^\x20-\x7E|\x0A]/i', '', $Value);
@@ -276,7 +276,7 @@ if (! function_exists('GenerateUpdateQuery')) {
                 }
                 
 				$StringQuery .= (empty($StringQuery)) ? '' : ', ';
-				$StringQuery .= "$Column = '" . mysql_escape_string($Value) . "'";
+				$StringQuery .= "$Column = '" . mysql_real_escape_string($Value) . "'";
 			}
 		}
 		$Query = "UPDATE `$Table` SET $StringQuery WHERE " . $ArrayField[0] . " = '" . $ArrayParam[$ArrayField[0]] . "'";
