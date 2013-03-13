@@ -117,7 +117,7 @@ class Item_model extends CI_Model {
 		return $next_item_id;
 	}
 	
-	function get_item_without_rate($user_id) {
+	function get_item_without_rate($user_id, $limit = 2000) {
 		$Array = array();
 		$SelectQuery  = "
 			SELECT
@@ -125,7 +125,7 @@ class Item_model extends CI_Model {
 				(SELECT rating FROM ".DATA." Data WHERE Data.item_id = Item.item_id AND user_id = '$user_id') rating
 			FROM ".ITEM." Item
 			ORDER BY rating ASC
-			LIMIT 2000
+			LIMIT $limit
 		";
 		$SelectResult = mysql_query($SelectQuery) or die(mysql_error());
 		while (false !== $Row = mysql_fetch_assoc($SelectResult)) {

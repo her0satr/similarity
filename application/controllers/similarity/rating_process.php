@@ -22,10 +22,10 @@ class rating_process extends CI_Controller {
 		$user_id = $_POST['user_id'];
 		
 		$ArrayPrediction = $this->Prediction_model->GetArray(array('user_id' => $user_id));
-		$ArrayItem = $this->Item_model->get_item_without_rate($user_id);
+		$ArrayItem = $this->Item_model->get_item_without_rate($user_id, 2000);
 		
 		$Request = array( 'Loop' => 0, 'Message' => '' );
-		if (count($ArrayPrediction) == 0 && count($ArrayItem) > 0) {
+		if (count($ArrayItem) > 0) {
 			$ArrayAverage = $this->Data_model->GetAverage();
 			$ArrayUserRate = $this->Data_model->GetArray(array('user_id' => $user_id, 'limit' => 2000, 'ArrayKey' => 'item_id'));
 			
